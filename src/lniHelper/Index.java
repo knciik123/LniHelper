@@ -38,11 +38,11 @@ public class Index {
 			System.out.println("参数错误,请查看readme.md");
 		}
 		
-		String basePath = args[0];
+		String basePath = args[0].replace("\"", "");
 		
-		String inputPath = basePath + "excel\\excel.xlsx";
+		String inputPath = basePath + "\\excel\\excel.xlsx";
 		String outputPath =basePath + "\\table";
-		String logPath = basePath + "excel\\log.txt";
+		String logPath = basePath + "\\excel\\log.txt";
 		
 		Optional.ofNullable(inputPath).map(File::new).ifPresent(excelFile -> {
 			Hashtable<String, String> namePath = new Hashtable<>();
