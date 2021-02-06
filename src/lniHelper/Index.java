@@ -34,29 +34,28 @@ public class Index {
 	public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(cpu);
 
 	public static void main(String[] args) throws Exception {
-		if (args == null || args.length<2) {
+		if (args == null || args.length<1) {
 			System.out.println("参数错误,请查看readme.md");
 		}
 		
+		String basePath = args[0];
 		
-		String inputPath = args[0];
-		String outputPath = args[1];
-
-		Optional.ofNullable(outputPath);
+		String inputPath = basePath + "excel\\excel.xlsx";
+		String outputPath =basePath + "\\table";
+		String logPath = basePath + "excel\\log.txt";
+		
 		Optional.ofNullable(inputPath).map(File::new).ifPresent(excelFile -> {
 			Hashtable<String, String> namePath = new Hashtable<>();
-
-			namePath.put("ability.ini", outputPath + "\\table\\ability.ini");
-			namePath.put("buff.ini", outputPath + "\\table\\buff.ini");
-			namePath.put("destructable.ini", outputPath + "\\table\\destructable.ini");
-			namePath.put("doodad.ini", outputPath + "\\table\\doodad.ini");
-			namePath.put("item.ini", outputPath + "\\table\\item.ini");
-			namePath.put("unit.ini", outputPath + "\\table\\unit.ini");
-			namePath.put("misc.ini", outputPath + "\\table\\misc.ini");
-			namePath.put("txt.ini", outputPath + "\\table\\txt.ini");
-			namePath.put("upgrade.ini", outputPath + "\\table\\upgrade.ini.ini");
-
-			String logPath = outputPath + "excels\\log.txt";
+			namePath.put("ability.ini", outputPath + "\\ability.ini");
+			namePath.put("buff.ini", outputPath + "\\buff.ini");
+			namePath.put("destructable.ini", outputPath + "\\destructable.ini");
+			namePath.put("doodad.ini", outputPath + "\\doodad.ini");
+			namePath.put("item.ini", outputPath + "\\item.ini");
+			namePath.put("unit.ini", outputPath + "\\unit.ini");
+			namePath.put("misc.ini", outputPath + "\\misc.ini");
+			namePath.put("txt.ini", outputPath + "\\txt.ini");
+			namePath.put("upgrade.ini", outputPath + "\\upgrade.ini.ini");
+			
 			File logFile = new File(logPath);
 
 			if (!logFile.getParentFile().exists()) {
