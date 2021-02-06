@@ -2,6 +2,7 @@ package lniHelper;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -33,18 +34,17 @@ public class Index {
 	public static int cpu = Runtime.getRuntime().availableProcessors();
 	public static ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(cpu);
 
+	@SuppressWarnings("resource")
 	public static void main(String[] args) throws Exception {
-		if (args == null || args.length<1) {
+		if (args == null || args.length<1) 
 			System.out.println("参数错误,请查看readme.md");
-		}
 		
 		String basePath = args[0].replace("\"", "");
-		
 		String inputPath = basePath + "\\excel\\excel.xlsx";
 		String outputPath =basePath + "\\table";
 		String logPath = basePath + "\\excel\\log.txt";
 		
-		Optional.ofNullable(inputPath).map(File::new).ifPresent(excelFile -> {
+		Optional.ofNullable(inputPath).map(File::new).map(excelFile -> {
 			Hashtable<String, String> namePath = new Hashtable<>();
 			namePath.put("ability.ini", outputPath + "\\ability.ini");
 			namePath.put("buff.ini", outputPath + "\\buff.ini");
@@ -58,19 +58,17 @@ public class Index {
 			
 			File logFile = new File(logPath);
 
-			if (!logFile.getParentFile().exists()) {
+			if (!logFile.getParentFile().exists())
 				logFile.getParentFile().mkdir();
-			}
 
-			if (!logFile.exists()) {
+			if (!logFile.exists()) 
 				try {
 					logFile.createNewFile();
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			}
 
-			if (excelFile.isFile() && excelFile.exists()) {
+			if (excelFile.isFile() && excelFile.exists()) 
 				try {
 					Workbook wb = new XSSFWorkbook(excelFile);
 					Iterator<Sheet> car = wb.sheetIterator();
@@ -81,8 +79,8 @@ public class Index {
 						executor.execute(() -> {
 							try {
 								parseSheet(name, namePath.get(name), sheet);
-							} catch (RuntimeException re) {
-								System.out.println("sheet处理异常  " + name + " " + re.getClass());
+							} catch (RuntimeException e1) {
+								System.out.println("sheet处理异常  " + name + " " + e1.getClass());
 							} catch (Exception e2) {
 								System.out.println("sheet未处理  " + name + " " + e2.getMessage());
 							}
@@ -91,8 +89,11 @@ public class Index {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-			}
-		});
+			else
+				return null; //返回null触发orElseThrow
+			
+			return excelFile;
+		}).orElseThrow(()->new FileNotFoundException("未找到excel.xlsx"));
 		executor.shutdown();
 	}
 
